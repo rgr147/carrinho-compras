@@ -57,7 +57,7 @@ function mostraValorCarrinho() {
 limpar();
 
 function validaQuantiaDeItens() {
-    if(Number.isNaN(pegaQuantidadeItens()) || pegaQuantidadeItens() == 0){
+    if(Number.isNaN(pegaQuantidadeItens()) || pegaQuantidadeItens() <= 0){
         return true;
     }
 

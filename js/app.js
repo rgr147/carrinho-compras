@@ -1,10 +1,11 @@
-let valorTotal = 0; //armazena o valor total do carrinho.
+let valorTotal; //armazena o valor total do carrinho.
 
 //função acionada pela função "adicionar(). Puxa todas as descrições do produto selecionado"
 function pegaProdutoPrecoEscolhido() {
     let descricaoItem = document.getElementById('produto').value; //puxa o item escolhido na lista
     let produto = descricaoItem.split('-')[0].trim();
-    let preco = parseFloat(descricaoItem.split('$')[1].trim());
+    let valorUnitario = parseFloat(descricaoItem.split('$')[1].trim());
+    let preco = valorUnitario * pegaQuantidadeItens();
 
     return [produto, preco]
 }
@@ -13,17 +14,22 @@ function pegaProdutoPrecoEscolhido() {
 function pegaQuantidadeItens() {
     let quantidade = document.getElementById('quantidade').value;
 
-    return parseInt(quantidade);
+    return parseInt(quantidade);    
 }
 
 //funcao de acao do botao "adicionar"
 function adicionar() {
-    let itemAdicionado = document.querySelector('.carrinho__produtos__produto');
-    //insere a TAG no carrinho com a descricao e quantidade dos produtos escolhidos
-    itemAdicionado.innerHTML += `<br><span class="texto-azul">${pegaQuantidadeItens()}x</span> ${pegaProdutoPrecoEscolhido()[0]} <span class="texto-azul">R$${pegaProdutoPrecoEscolhido()[1]}</span>`;
-    calculcarValorCarrinho();
-    mostraValorCarrinho();
-    // pegaQuantidadeItens();
+    //validando a quantia do item
+    if(validaQuantiaDeItens()) {
+        return alert('É obrigatório escolher a quantia de itens até o limite de 100!');
+    } else {
+        let itemAdicionado = document.querySelector('.carrinho__produtos__produto'); //salva o caminho do html para inserir os itens no carrinho 
+        //insere a TAG no carrinho com a descricao e quantidade dos produtos escolhidos
+        itemAdicionado.innerHTML += `<br><span class="texto-azul">${pegaQuantidadeItens()}x</span> ${pegaProdutoPrecoEscolhido()[0]} <span class="texto-azul">R$${pegaProdutoPrecoEscolhido()[1]}</span>`;
+        calculcarValorCarrinho();
+        mostraValorCarrinho();
+        document.getElementById('quantidade').value = 0; //zera o campo de input da quantidade para o próximo item 
+    }
 }
 
 //função de ação do botão limpar
@@ -39,7 +45,7 @@ function limpar() {
 
 //função responsável por calcular o valor total do carrinho
 function calculcarValorCarrinho() {
-    valorTotal = valorTotal + (pegaQuantidadeItens() * pegaProdutoPrecoEscolhido()[1]) //soma a variavel "valorTotal" com os valores da função "pegaProdutoPrecoEscolhido()"
+    valorTotal = valorTotal + pegaProdutoPrecoEscolhido()[1]; //soma a variavel "valorTotal" com os valores da função "pegaProdutoPrecoEscolhido()"
 }
 
 //função que atualiza o valor total do carrinho na página
@@ -49,3 +55,13 @@ function mostraValorCarrinho() {
 }
 
 limpar();
+
+function validaQuantiaDeItens() {
+    if(Number.isNaN(pegaQuantidadeItens()) || pegaQuantidadeItens() == 0){
+        return true;
+    }
+
+    if(pegaQuantidadeItens() > 100) {
+        return true;
+    }
+}
